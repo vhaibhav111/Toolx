@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Math & Calculators Suite</title>
+    <meta name="description" content="A powerful, modern suite of free online calculators: Percentage, Age, BMI, Loan EMI, Scientific, Currency Converter, and more.">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        /* --- Android 16 / Material You Inspired UI --- */
+        :root {
+            --primary-color: #198754; /* Financial Green */
+            --bg-color: #f4f7fc;
+            --card-bg-color: #ffffff;
+            --text-color: #343a40;
+            --text-secondary: #6c757d;
+            --border-color: #eef2f9;
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            --card-radius: 1.5rem;
+            --button-radius: 50px;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Roboto+Mono:wght@500&display=swap');
+
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Poppins', sans-serif; }
+        .main-header { background-color: transparent; padding-top: 1.5rem; padding-bottom: 1rem; }
+        .main-footer { background-color: var(--card-bg-color); border-top: 1px solid var(--border-color); }
+        #tools-nav-container .card { background-color: transparent; border: none; box-shadow: none; }
+        .nav-pills .nav-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; color: var(--text-secondary); font-weight: 500; transition: all 0.2s ease-in-out; }
+        .nav-pills .nav-link i { font-size: 1.2rem; width: 24px; text-align: center; }
+        .nav-pills .nav-link:hover { background-color: var(--border-color); color: var(--primary-color); }
+        .nav-pills .nav-link.active { background-color: var(--primary-color); color: white; box-shadow: 0 4px 12px rgba(25, 135, 84, 0.4); }
+
+        .tool-container.card { background-color: var(--card-bg-color); border: 1px solid var(--border-color); border-radius: var(--card-radius); box-shadow: var(--card-shadow); }
+        .tool-container .card-header { background-color: var(--card-bg-color); border-bottom: 1px solid var(--border-color); padding: 1.5rem; }
+        .tool-container .card-body { padding: 1.5rem; }
+
+        .form-control, .form-select { border-radius: 12px; padding: 12px 16px; border: 1px solid var(--border-color); background-color: var(--bg-color); transition: all 0.2s ease; }
+        .form-control:focus, .form-select:focus { background-color: white; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.2); }
+        .btn { border-radius: var(--button-radius); font-weight: 600; padding: 12px 24px; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .btn-primary { background-color: var(--primary-color); border-color: var(--primary-color); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+        
+        .result-box { background-color: var(--bg-color); padding: 1.5rem; border-radius: 1rem; text-align: center; }
+        .result-box h6 { color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+        .result-box .display-4 { color: var(--primary-color); font-weight: 600; }
+
+        /* Scientific Calculator Specific */
+        #sci-calc-display { font-family: 'Roboto Mono', monospace; font-size: 2rem; background-color: var(--bg-color); border-radius: 12px; text-align: right; overflow-x: auto; }
+        .sci-calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .sci-calc-grid button { padding: 18px; border-radius: 12px; font-size: 1.2rem; background-color: var(--bg-color); color: var(--text-color); border: none; box-shadow: none; }
+        .sci-calc-grid button:hover { background-color: #e0e5ec; }
+        .sci-calc-grid button.operator { background-color: #f0f3f8; color: var(--primary-color); }
+
+        .ad-placeholder { background-color: #eef2f9; border: 2px dashed #d6dce6; display: flex; align-items: center; justify-content: center; text-align: center; color: #98a5b9; font-weight: 500; border-radius: 1rem; }
+        .ad-leaderboard, .ad-footer { min-height: 90px; }
+        .ad-sidebar { min-height: 600px; background-color: var(--card-bg-color); }
+        .ad-in-content { min-height: 250px; }
+        .tool-container { display: none; }
+        .tool-container.active { display: block; }
+        
+        @media (max-width: 991.98px) {
+            #tools-nav-container .nav-pills { display: flex; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 1rem; margin-bottom: 1.5rem; scrollbar-width: none; }
+            #tools-nav-container .nav-pills::-webkit-scrollbar { display: none; }
+            .nav-pills .nav-link { white-space: nowrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container text-center">
+            <h1 class="display-5 fw-bold">Math & Calculators Suite</h1>
+            <p class="lead text-secondary">A collection of essential tools for everyday calculations.</p>
+        </div>
+    </header>
+
+    <div class="container-fluid px-lg-5 my-4">
+        <!-- Top Ad Section -->
+        <div class="ad-placeholder ad-leaderboard mb-5 mx-auto" style="max-width: 728px;">Top Banner Ad (728x90)</div>
+
+        <div class="row g-4">
+            <!-- Left Navigation Sidebar -->
+            <div class="col-lg-3" id="tools-nav-container">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <button class="nav-link text-start active" data-tool="tool-percentage"><i class="bi bi-percent"></i><span>Percentage Calculator</span></button>
+                        <button class="nav-link text-start" data-tool="tool-age"><i class="bi bi-calendar-event"></i><span>Age Calculator</span></button>
+                        <button class="nav-link text-start" data-tool="tool-bmi"><i class="bi bi-heart-pulse"></i><span>BMI Calculator</span></button>
+                        <button class="nav-link text-start" data-tool="tool-loan"><i class="bi bi-bank"></i><span>Loan EMI Calculator</span></button>
+                        <button class="nav-link text-start" data-tool="tool-scientific-calc"><i class="bi bi-calculator-fill"></i><span>Scientific Calculator</span></button>
+                        <button class="nav-link text-start" data-tool="tool-discount"><i class="bi bi-tag-fill"></i><span>Discount Calculator</span></button>
+                        <button class="nav-link text-start" data-tool="tool-currency"><i class="bi bi-currency-exchange"></i><span>Currency Converter</span></button>
+                        <button class="nav-link text-start" data-tool="tool-timezone"><i class="bi bi-clock-history"></i><span>Time Zone Converter</span></button>
+                        <button class="nav-link text-start" data-tool="tool-binary"><i class="bi bi-123"></i><span>Binary/Decimal Converter</span></button>
+                        <button class="nav-link text-start" data-tool="tool-tip"><i class="bi bi-cash-coin"></i><span>Tip Calculator</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="col-lg-6">
+                <!-- Percentage Calculator -->
+                <div id="tool-percentage" class="tool-container card active">
+                    <div class="card-header"><h3>Percentage Calculator</h3></div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-5"><input type="number" id="perc-val1" class="form-control" placeholder="What is ...%"></div>
+                            <div class="col-md-2 text-center align-self-center">of</div>
+                            <div class="col-md-5"><input type="number" id="perc-val2" class="form-control" placeholder="... this number?"></div>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-3" id="perc-calc-btn">Calculate</button>
+                        <div id="perc-output" class="result-box mt-4 d-none"></div>
+                    </div>
+                </div>
+
+                <!-- Age Calculator -->
+                <div id="tool-age" class="tool-container card">
+                    <div class="card-header"><h3>Age Calculator</h3></div>
+                    <div class="card-body">
+                        <label for="age-dob" class="form-label">Enter your Date of Birth:</label>
+                        <input type="date" id="age-dob" class="form-control">
+                        <button class="btn btn-primary w-100 mt-3" id="age-calc-btn">Calculate Age</button>
+                        <div id="age-output" class="mt-4 row g-3 d-none"></div>
+                    </div>
+                </div>
+
+                <!-- BMI Calculator -->
+                <div id="tool-bmi" class="tool-container card">
+                    <div class="card-header"><h3>BMI Calculator</h3></div>
+                    <div class="card-body">
+                        <div class="mb-3"><label class="form-label">Height (cm)</label><input type="number" id="bmi-height" class="form-control"></div>
+                        <div class="mb-3"><label class="form-label">Weight (kg)</label><input type="number" id="bmi-weight" class="form-control"></div>
+                        <button class="btn btn-primary w-100 mt-2" id="bmi-calc-btn">Calculate BMI</button>
+                        <div id="bmi-output" class="result-box mt-4 d-none"></div>
+                    </div>
+                </div>
+
+                <!-- Loan EMI Calculator -->
+                <div id="tool-loan" class="tool-container card">
+                    <div class="card-header"><h3>Loan EMI Calculator</h3></div>
+                    <div class="card-body">
+                        <div class="mb-3"><label class="form-label">Loan Amount ($)</label><input type="number" id="loan-amount" class="form-control"></div>
+                        <div class="mb-3"><label class="form-label">Annual Interest Rate (%)</label><input type="number" id="loan-rate" class="form-control"></div>
+                        <div class="mb-3"><label class="form-label">Loan Tenure (Years)</label><input type="number" id="loan-tenure" class="form-control"></div>
+                        <button class="btn btn-primary w-100 mt-2" id="loan-calc-btn">Calculate EMI</button>
+                        <div id="loan-output" class="result-box mt-4 d-none"></div>
+                    </div>
+                </div>
+
+                <!-- Scientific Calculator -->
+                <div id="tool-scientific-calc" class="tool-container card">
+                    <div class="card-header"><h3>Scientific Calculator</h3></div>
+                    <div class="card-body">
+                        <div id="sci-calc-display" class="p-3 mb-3">0</div>
+                        <div id="sci-calc-grid" class="sci-calc-grid">
+                            <!-- JS will populate this grid -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Discount Calculator -->
+                <div id="tool-discount" class="tool-container card">
+                    <div class="card-header"><h3>Discount Calculator</h3></div>
+                    <div class="card-body">
+                        <div class="mb-3"><label class="form-label">Original Price ($)</label><input type="number" id="disc-price" class="form-control"></div>
+                        <div class="mb-3"><label class="form-label">Discount (%)</label><input type="number" id="disc-percent" class="form-control"></div>
+                        <button class="btn btn-primary w-100 mt-2" id="disc-calc-btn">Calculate Discount</button>
+                        <div id="disc-output" class="mt-4 row g-3 d-none"></div>
+                    </div>
+                </div>
+
+                <!-- Currency Converter -->
+                <div id="tool-currency" class="tool-container card">
+                    <div class="card-header"><h3>Currency Converter</h3></div>
+                    <div class="card-body">
+                        <div class="alert alert-info small"><i class="bi bi-info-circle-fill"></i> Rates are updated daily from a live API.</div>
+                        <div class="mb-3"><label class="form-label">Amount</label><input type="number" id="curr-amount" class="form-control" value="1"></div>
+                        <div class="row g-3">
+                            <div class="col"><label class="form-label">From</label><select id="curr-from" class="form-select"></select></div>
+                            <div class="col"><label class="form-label">To</label><select id="curr-to" class="form-select"></select></div>
+                        </div>
+                        <div id="curr-output" class="result-box mt-4 d-none"></div>
+                    </div>
+                </div>
+                
+                <!-- Time Zone Converter -->
+                <div id="tool-timezone" class="tool-container card">
+                    <div class="card-header"><h3>Time Zone Converter</h3></div>
+                    <div class="card-body">
+                        <div class="mb-3"><label class="form-label">From Time Zone</label><select id="tz-from" class="form-select"></select></div>
+                        <div class="mb-3"><label class="form-label">To Time Zone</label><select id="tz-to" class="form-select"></select></div>
+                        <div id="tz-output" class="result-box mt-3"></div>
+                    </div>
+                </div>
+
+                <!-- Binary/Decimal Converter -->
+                <div id="tool-binary" class="tool-container card">
+                    <div class="card-header"><h3>Binary ↔ Decimal Converter</h3></div>
+                    <div class="card-body">
+                        <div class="mb-3"><label class="form-label">Decimal</label><input type="number" id="conv-decimal" class="form-control" placeholder="Enter a decimal number"></div>
+                        <div class="mb-3"><label class="form-label">Binary</label><input type="text" id="conv-binary" class="form-control" placeholder="Enter a binary number"></div>
+                    </div>
+                </div>
+
+                <!-- Tip Calculator -->
+                <div id="tool-tip" class="tool-container card">
+                    <div class="card-header"><h3>Tip Calculator</h3></div>
+                    <div class="card-body">
+                        <div class="mb-3"><label class="form-label">Bill Amount ($)</label><input type="number" id="tip-bill" class="form-control"></div>
+                        <div class="mb-3"><label class="form-label">Tip Percentage (%)</label><input type="number" id="tip-percent" class="form-control" value="15"></div>
+                        <div class="mb-3"><label class="form-label">Number of People</label><input type="number" id="tip-people" class="form-control" value="1"></div>
+                        <button class="btn btn-primary w-100 mt-2" id="tip-calc-btn">Calculate Tip</button>
+                        <div id="tip-output" class="mt-4 row g-3 d-none"></div>
+                    </div>
+                </div>
+
+                <!-- In-Content Ad Section -->
+                <div class="ad-placeholder ad-in-content my-4">In-Content Ad (300x250)</div>
+            </div>
+
+            <!-- Right Sidebar for Ads -->
+            <div class="col-lg-3">
+                <div class="sticky-top" style="top: 20px;">
+                    <div class="ad-placeholder ad-sidebar">Vertical Ad <br> (300x600)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer mt-auto text-center p-4">
+        <div class="container">
+            <div class="ad-placeholder ad-footer mb-4 mx-auto" style="max-width: 728px;">Footer Ad (728x90)</div>
+            <p class="text-secondary">© 2024 Modern Calculators Suite. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Main Navigation & Helpers ---
+        const toolButtons = document.querySelectorAll('#v-pills-tab .nav-link');
+        const toolContainers = document.querySelectorAll('.tool-container');
+        function showTool(toolId) {
+            toolContainers.forEach(c => c.classList.remove('active'));
+            toolButtons.forEach(b => b.classList.remove('active'));
+            document.getElementById(toolId).classList.add('active');
+            document.querySelector(`[data-tool="${toolId}"]`).classList.add('active');
+        }
+        toolButtons.forEach(button => button.addEventListener('click', () => showTool(button.getAttribute('data-tool'))));
+
+        function showResult(container, content) {
+            container.innerHTML = content;
+            container.classList.remove('d-none');
+        }
+
+        // --- Percentage Calculator ---
+        document.getElementById('perc-calc-btn').addEventListener('click', () => {
+            const v1 = parseFloat(document.getElementById('perc-val1').value);
+            const v2 = parseFloat(document.getElementById('perc-val2').value);
+            if (isNaN(v1) || isNaN(v2)) return;
+            const result = (v1 / 100) * v2;
+            showResult(document.getElementById('perc-output'), `<h6>Result</h6><p class="display-4">${result.toFixed(2)}</p>`);
+        });
+
+        // --- Age Calculator ---
+        document.getElementById('age-calc-btn').addEventListener('click', () => {
+            const dob = new Date(document.getElementById('age-dob').value);
+            if (isNaN(dob.getTime())) return;
+            const today = new Date();
+            let ageYears = today.getFullYear() - dob.getFullYear();
+            let ageMonths = today.getMonth() - dob.getMonth();
+            let ageDays = today.getDate() - dob.getDate();
+            if (ageDays < 0) { ageMonths--; ageDays += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
+            if (ageMonths < 0) { ageYears--; ageMonths += 12; }
+            const outputEl = document.getElementById('age-output');
+            outputEl.innerHTML = `
+                <div class="col-4"><div class="result-box"><h6>Years</h6><p class="display-4">${ageYears}</p></div></div>
+                <div class="col-4"><div class="result-box"><h6>Months</h6><p class="display-4">${ageMonths}</p></div></div>
+                <div class="col-4"><div class="result-box"><h6>Days</h6><p class="display-4">${ageDays}</p></div></div>`;
+            outputEl.classList.remove('d-none');
+        });
+
+        // --- BMI Calculator ---
+        document.getElementById('bmi-calc-btn').addEventListener('click', () => {
+            const h = parseFloat(document.getElementById('bmi-height').value) / 100;
+            const w = parseFloat(document.getElementById('bmi-weight').value);
+            if (isNaN(h) || isNaN(w) || h === 0) return;
+            const bmi = w / (h * h);
+            let category = "Normal";
+            if (bmi < 18.5) category = "Underweight";
+            else if (bmi >= 25 && bmi < 30) category = "Overweight";
+            else if (bmi >= 30) category = "Obese";
+            showResult(document.getElementById('bmi-output'), `<h6>Your BMI</h6><p class="display-4">${bmi.toFixed(1)}</p><p class="lead">${category}</p>`);
+        });
+
+        // --- Loan EMI Calculator ---
+        document.getElementById('loan-calc-btn').addEventListener('click', () => {
+            const p = parseFl
