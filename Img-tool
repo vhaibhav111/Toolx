@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Image Tools Suite</title>
+    <meta name="description" content="A modern, clean, and fast suite of free online image tools: Converters, Resizer, Compressor, Cropper, GIF Maker, QR Code Generator, and more.">
+    
+    <!-- Bootstrap CSS (Still the foundation) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Cropper.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
+    
+    <style>
+        /* --- Android 16 / Material You Inspired UI --- */
+        :root {
+            --primary-color: #4a80f5;
+            --bg-color: #f4f7fc;
+            --card-bg-color: #ffffff;
+            --text-color: #343a40;
+            --text-secondary: #6c757d;
+            --border-color: #eef2f9;
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            --card-radius: 1.5rem; /* 24px */
+            --button-radius: 50px; /* Pill shape */
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- Header & Footer --- */
+        .main-header {
+            background-color: transparent;
+            padding-top: 1.5rem;
+            padding-bottom: 1rem;
+        }
+        .main-footer {
+            background-color: var(--card-bg-color);
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* --- Tool Navigation --- */
+        #tools-nav-container .card {
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+        }
+        .nav-pills .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-pills .nav-link i {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+        .nav-pills .nav-link:hover {
+            background-color: var(--border-color);
+            color: var(--primary-color);
+        }
+        .nav-pills .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(74, 128, 245, 0.4);
+        }
+
+        /* --- Tool Card & Form Styling --- */
+        .tool-container.card {
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            overflow: hidden; /* Ensures children respect the radius */
+        }
+        .tool-container .card-header {
+            background-color: var(--card-bg-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+        .tool-container .card-body {
+            padding: 1.5rem;
+        }
+        .form-control, .form-range {
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            transition: all 0.2s ease;
+        }
+        .form-control:focus {
+            background-color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 128, 245, 0.2);
+        }
+        .btn {
+            border-radius: var(--button-radius);
+            font-weight: 600;
+            padding: 12px 24px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+        
+        /* --- Specific Component Styles --- */
+        #cropper-image-preview, #gif-frames-preview img {
+            max-width: 100%;
+            display: block;
+            border-radius: 1rem;
+        }
+        #qr-output, #pdf-output img {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 1rem;
+            display: inline-block;
+            box-shadow: var(--card-shadow);
+        }
+
+        /* --- Ad Placeholders --- */
+        .ad-placeholder {
+            background-color: #eef2f9;
+            border: 2px dashed #d6dce6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #98a5b9;
+            font-weight: 500;
+            border-radius: 1rem;
+        }
+        .ad-leaderboard { min-height: 90px; }
+        .ad-sidebar { min-height: 600px; background-color: var(--card-bg-color); }
+        .ad-footer { min-height: 90px; background-color: transparent; }
+        .ad-in-content { min-height: 250px; }
+
+        /* --- Responsiveness --- */
+        .tool-container { display: none; }
+        .tool-container.active { display: block; }
+        
+        @media (max-width: 991.98px) {
+            #tools-nav-container .nav-pills {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 1rem;
+                margin-bottom: 1.5rem;
+                scrollbar-width: none; /* Firefox */
+            }
+            #tools-nav-container .nav-pills::-webkit-scrollbar {
+                display: none; /* Chrome, Safari */
+            }
+            .nav-pills .nav-link {
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container text-center">
+            <h1 class="display-5 fw-bold">Image Tools Suite</h1>
+            <p class="lead text-secondary">10 powerful image utilities with a modern touch.</p>
+        </div>
+    </header>
+
+    <div class="container-fluid px-lg-5 my-4">
+        <!-- Top Ad Section -->
+        <div class="ad-placeholder ad-leaderboard mb-5 mx-auto" style="max-width: 728px;">
+            Top Banner Ad (728x90)
+        </div>
+
+        <div class="row g-4">
+            <!-- Left Navigation Sidebar -->
+            <div class="col-lg-3" id="tools-nav-container">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <button class="nav-link text-start active" data-tool="tool-png-converter"><i class="bi bi-filetype-png"></i><span>Image to PNG</span></button>
+                        <button class="nav-link text-start" data-tool="tool-jpg-converter"><i class="bi bi-filetype-jpg"></i><span>Image to JPG</span></button>
+                        <button class="nav-link text-start" data-tool="tool-webp-converter"><i class="bi bi-filetype-webp"></i><span>WebP to PNG</span></button>
+                        <button class="nav-link text-start" data-tool="tool-resizer"><i class="bi bi-aspect-ratio"></i><span>Image Resizer</span></button>
+                        <button class="nav-link text-start" data-tool="tool-compressor"><i class="bi bi-arrows-angle-contract"></i><span>Image Compressor</span></button>
+                        <button class="nav-link text-start" data-tool="tool-cropper"><i class="bi bi-crop"></i><span>Image Cropper</span></button>
+                        <button class="nav-link text-start" data-tool="tool-base64"><i class="bi bi-braces"></i><span>Image to Base64</span></button>
+                        <button class="nav-link text-start" data-tool="tool-gif-maker"><i class="bi bi-filetype-gif"></i><span>GIF Maker</span></button>
+                        <button class="nav-link text-start" data-tool="tool-qr-generator"><i class="bi bi-qr-code"></i><span>QR Code Generator</span></button>
+                        <button class="nav-link text-start" data-tool="tool-pdf-converter"><i class="bi bi-file-earmark-pdf"></i><span>Image to PDF</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="col-lg-6">
+                <!-- All Tool Containers Go Here -->
+                <!-- The HTML structure for tools remains the same, but they will inherit the new styles. -->
+                
+                <!-- 1. Image to PNG Converter -->
+                <div id="tool-png-converter" class="tool-container card active">
+                    <div class="card-header"><h3>Image to PNG Converter</h3></div>
+                    <div class="card-body">
+                        <p class="text-secondary">Upload any image (JPG, WebP, GIF) to convert it to a high-quality PNG file.</p>
+                        <input type="file" class="form-control" id="png-input" accept="image/*">
+                        <div class="mt-4 text-center" id="png-output"></div>
+                    </div>
+                </div>
+
+                <!-- 2. Image to JPG Converter -->
+                <div id="tool-jpg-converter" class="tool-container card">
+                    <div class="card-header"><h3>Image to JPG Converter</h3></div>
+                    <div class="card-body">
+                        <p class="text-secondary">Upload any image to convert it to a JPG file. Choose your desired quality.</p>
+                        <input type="file" class="form-control" id="jpg-input" accept="image/*">
+                        <label for="jpg-quality" class="form-label mt-3 fw-medium">Quality (0.1 to 1.0):</label>
+                        <input type="range" class="form-range" id="jpg-quality" min="0.1" max="1.0" step="0.1" value="0.8">
+                        <div class="mt-4 text-center" id="jpg-output"></div>
+                    </div>
+                </div>
+                
+                <!-- 3. WebP to PNG Converter -->
+                <div id="tool-webp-converter" class="tool-container card">
+                    <div class="card-header"><h3>WebP to PNG Converter</h3></div>
+                    <div class="card-body">
+                        <p class="text-secondary">Upload a WebP image to convert it into the PNG format.</p>
+                        <input type="file" class="form-control" id="webp-input" accept="image/webp">
+                        <div class="mt-4 text-center" id="webp-output"></div>
+                    </div>
+                </div>
+
+                <!-- 4. Image Resizer -->
+                <div id="tool-resizer" class="tool-container card">
+                    <div class="card-header"><h3>Image Resizer</h3></div>
+                    <div class="card-body">
+                        <p class="text-secondary">Upload an image and specify new dimensions in pixels.</p>
+                        <input type="file" class="form-control" id="resizer-input" accept="image/*">
+                        <div class="row g-3 mt-3">
+                            <div class="col">
+                                <label for="resizer-width" class="form-label fw-medium">Width:</label>
+                                <input type="number" class="form-control" id="resizer-width" placeholder="e.g., 800">
+                            </div>
+                            <div class="col">
+                                <label for="resizer-height" class="form-label fw-medium">Height:</label>
+                                <input type="number" class="form-control" id="resizer-height" placeholder="e.g., 600">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary mt-4" id="resizer-btn">Resize Image</button>
+                        <div class="mt-4 text-center" id="resizer-output"></div>
+                    </div>
+                </div>
+
+                <!-- 5. Image Compressor -->
+                <div id="tool-compressor" class="tool-container card">
+                    <div class="card-header"><h3>Image Compressor</h3></div>
+                    <div class="card-body">
+                        <p class="text-secondary">Reduce the file size of your JPG or PNG images by adjusting the quality.</p>
+                        <input type="file" class="form-control" id="compressor-input" accept="image/jpeg,image/png">
+                        <label for="compressor-quality" class="form-label mt-3 fw-medium">Compression Quality:</label>
+                        <input type="range" class="form-range" id="compressor-quality" min="0.1" max="1.0" step="0.05" value="0.7">
+                        <div class="mt-4 text-center" id="compressor-output"></div>
+                    </div>
+                </div>
+
+                <!-- 6. Image Cropper -->
+                <div id="tool-cropper" class="tool-container card">
+                    <div class="card-header"><h3>Image Cropper</h3></div>
+                    <div class="card-body">
+                        <p class="text-secondary">Upload an image, select the area you want to crop, and download it.</p>
+                        <input type="file" class="form-control" id="cropper-input" accept="image/*">
+                        <div class="mt-3 bg-light p-2 rounded-4">
+                            <img id="cropper-image-preview" src="" alt="Image preview for cropping">
+                        </div>
+                        <button class="btn btn-primary mt-4" id="cropper-btn" style="display:none;"><i class="bi bi-scissors"></i> Crop & Download</button>
+                        <div class="mt-4 text-center" id="cropper-output"></div>
+                    </div>
+                </div>
+
+                <!-- 7. Image to Base64 -->
+                <div id="tool-base64" class="tool-container card">
+                    <div class="card-header"><h3>Image to Base64 Converter</h3></div>
+                    <div class="card-body">
+                        <p class="text-secondary">Convert an image into a Base64 text string for embedding in code.</p>
+                        <input type="file" class="form-control" id="base64-input" accept="image/*">
+                        <textarea class="form-control mt-3" id="base64-output" rows="5" readonly placeholder="Base64 output will appear here..."></textarea>
+                        <button class="btn btn-secondary mt-3" id="base64-copy-btn"><i class="bi bi-clipboard-check"></i> Copy to Clipboard</button>
+                    </div>
+                </div>
+                
+                <!-- 8. GIF Maker -->
+                <div id="tool-gif-maker" class="tool-container card">
+                    <div class="card-header"><h3>GIF Maker from Images</h3></div>
+                    <div class="card-body">
+                        <p class="text-secondary">Upload multiple images to create an animated GIF.</p>
+                        <input type="file" class="form-control" id="gif-input" accept="image/*" multiple>
+                        <div id="gif-frames-preview" class="mt-3 d-flex flex-wrap gap-2"></div>
+                        <div class="row g-3 mt-3">
+                           <div class="col">
+                                <label for="gif-delay" class="form-label fw-medium">Delay (ms):</label>
+                                <input type="number" class="form-control" id="gif-delay" value="200">
+                           </div>
+                           <div class="col">
+                                <label for="gif-quality" class="form-label fw-medium">Quality (1-30):</label>
+                                <input type="number" class="form-control" id="gif-quality" value="10" min="1" max="30">
+                           </div>
+                        </div>
+                        <button class="btn btn-primary mt-4" id="gif-create-btn">Create GIF</button>
+                        <div id="gif-output" class="mt-4 text-center"></div>
+                    </div>
+                </div>
+
+                <!-- 9. QR Code Generator -->
+                <div id="tool-qr-generator" class="tool-container card">
+                    <div class="card-header"><h3>QR Code Generator</h3></div>
+                    <div class="card-body">
+                        <p class="text-secondary">Enter any text or URL to generate a QR code instantly.</p>
+                        <textarea class="form-control" id="qr-input" rows="4" placeholder="Enter text or URL here..."></textarea>
+                        <div class="mt-4 text-center" id="qr-output"></div>
+                    </div>
+                </div>
+
+                <!-- 10. Image to PDF Converter -->
+                <div id="tool-pdf-converter" class="tool-container card">
+                    <div class="card-header"><h3>Image to PDF Converter</h3></div>
+                    <div class="card-body">
+                        <p class="text-secondary">Upload an image (like a screenshot) to convert it into a PDF document.</p>
+                        <input type="file" class="form-control" id="pdf-input" accept="image/*">
+                        <div class="mt-4 text-center" id="pdf-output"></div>
+                        <button class="btn btn-danger mt-3 mx-auto d-block" id="pdf-btn" style="display: none;"><i class="bi bi-download"></i> Download as PDF</button>
+                    </div>
+                </div>
+                
+                <!-- In-Content Ad Section -->
+                <div class="ad-placeholder ad-in-content my-4">
+                    In-Content Ad (300x250)
+                </div>
+            </div>
+
+            <!-- Right Sidebar for Ads -->
+            <div class="col-lg-3">
+                <div class="sticky-top" style="top: 20px;">
+                    <div class="ad-placeholder ad-sidebar">
+                        Vertical Ad <br> (300x600)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer mt-auto text-center p-4">
+        <div class="container">
+            <div class="ad-placeholder ad-footer mb-4 mx-auto" style="max-width: 728px;">
+                Footer Ad (728x90)
+            </div>
+            <p class="text-secondary">© 2024 Modern Image Tools Suite. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JS Libraries (NO CHANGES HERE) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-gif/0.1.0/gif.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+    // --- JAVASCRIPT LOGIC (UNTOUCHED, IT WORKS WITH THE NEW UI) ---
+    document.addEventListener('DOMContentLoaded', function() {
+        const toolButtons = document.querySelectorAll('#v-pills-tab .nav-link');
+        const toolContainers = document.querySelectorAll('.tool-container');
